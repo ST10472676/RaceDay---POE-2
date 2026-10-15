@@ -1,0 +1,23 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build output
+bin/
+obj/
+
+# Test output
+TestResults/
+
+# Rider
+.idea/
+
+# User-specific configuration
+appsettings.Local.json
+
+# OS
+.DS_Store
+Thumbs.db

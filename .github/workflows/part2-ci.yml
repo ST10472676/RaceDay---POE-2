@@ -1,0 +1,41 @@
+name: RaceDay Part 2 CI
+
+on:
+  push:
+    branches: [ "main", "part2" ]
+  pull_request:
+    branches: [ "main", "part2" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore RaceDay.sln
+
+      - name: Build
+        run: dotnet build RaceDay.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test RaceDay.sln --configuration Release --no-build --verbosity normal
+
+      - name: Validate Part 1 and Part 2 documents
+        shell: bash
+        run: |
+          test -f README.md
+          test -f docs/API_EndPoint_Plan.md
+          test -f docs/RaceDayDatabase.sql
+          test -f docs/RaceDay-ERD.png
+          test -f src/RaceDay.Api/RaceDay.Api.csproj
+          test -f tests/RaceDay.Api.Tests/RaceDay.Api.Tests.csproj
+          test -f src/RaceDay.Api/Program.cs
+          echo "Required RaceDay Part 2 files are present."
