@@ -21,7 +21,8 @@ public record UserResponse(
     string Email,
     string? PhoneNumber,
     string Role,
-    DateTime DateCreated);
+    DateTime DateCreated,
+    string? ProfilePictureUrl = null);
 
 public record UpdateProfileRequest(
     [property: Required, StringLength(50)] string FirstName,

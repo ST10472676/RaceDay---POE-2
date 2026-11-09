@@ -54,5 +54,5 @@ public class UsersController : ControllerBase
     }
 
     private static UserResponse ToResponse(User user) =>
-        new(user.UserID, user.FirstName, user.LastName, user.Email, user.PhoneNumber, user.Role, user.DateCreated);
+        new(user.UserID, user.FirstName, user.LastName, user.Email, user.PhoneNumber, user.Role, user.DateCreated, user.ProfilePictureUrl);
 }

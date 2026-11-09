@@ -6,7 +6,6 @@ using RaceDay.Api.Models;
 using Xunit;
 
 namespace RaceDay.Api.Tests;
-
 public class ApiTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly CustomWebApplicationFactory _factory;
@@ -31,7 +30,7 @@ public class ApiTests : IClassFixture<CustomWebApplicationFactory>
 
         Assert.Equal(HttpStatusCode.Created, register.StatusCode);
 
-        //extract the email from the response rather than relying on a hard-coded account.
+        //extract the email from the response.
         var registered = await register.Content.ReadFromJsonAsync<UserResponse>();
         Assert.NotNull(registered);
 

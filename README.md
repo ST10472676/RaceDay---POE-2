@@ -1,402 +1,158 @@
-# RaceDay – Comrades Marathon Event Management System
+# RaceDay – Part 1, Part 2 and Part 3
 
-## Project Overview
-RaceDay is a web-based event management system developed for the Comrades Marathon event environment. The system provides an ASP.NET Core Web API for managing users, events, routes, categories, enrolments, race results and event weather information.
+RaceDay is a South African road running, walking and cycling event management platform. This repository preserves the Part 1 planning artefacts and Part 2 ASP.NET Core REST API, and adds a Part 3 ASP.NET Core MVC front end.
 
-Part 2 continues the RaceDay system developed in Part 1 by implementing the planned RESTful API functionality using ASP.NET Core, Entity Framework Core and SQL Server.
+## Architecture
 
-The project is designed around role-based access for two main users:
+- **RaceDay.Api**: ASP.NET Core Web API, EF Core and SQL Server. It remains the only application component that accesses the database.
+- **RaceDay.Mvc**: ASP.NET Core MVC application. All event, account, category, enrolment, result and profile operations are sent to the API using `HttpClient`.
+- **Azure Blob Storage**: Images are uploaded from MVC to API upload endpoints; the API stores them in Blob containers and saves image URLs.
+- **Docker**: The MVC application is built and run in a Linux container.
 
-* **Organiser** – manages events, categories, enrolments and race-related information.
-* **Participant** – registers, logs in, manages their profile, enrols in events and views their information.
+The MVC project must not connect directly to SQL Server and must not contain duplicated database business logic.
 
-## Technologies Used
-* **C#**
-* **ASP.NET Core Web API**
-* **.NET 8**
-* **Entity Framework Core**
-* **Microsoft SQL Server**
-* **SQL Server Management Studio (SSMS)**
-* **Swagger**
-* **xUnit**
-* **ASP.NET Core Web Application Testing**
-* **Entity Framework Core In-Memory Database for automated tests**
-* **Git and GitHub**
-* **GitHub Actions**
-
-## Project Structure
-
-```text
-RaceDay/
-│
-├── .github/
-│   └── workflows/
-│       └── part2-ci.yml
-│
-├── docs/
-│   ├── API_EndPoint_Plan.md
-│   ├── RaceDay-ERD.png
-│   ├── RaceDayDatabase.sql
-│   └── CI-Success.png
-│
-├── src/
-│   └── RaceDay.Api/
-│       ├── Controllers/
-│       ├── Data/
-│       ├── DTOs/
-│       ├── Extensions/
-│       ├── Filters/
-│       ├── Models/
-│       ├── Program.cs
-│       └── RaceDay.Api.csproj
-│
-├── tests/
-│   └── RaceDay.Api.Tests/
-│       ├── ApiTests.cs
-│       ├── CustomWebApplicationFactory.cs
-│       └── RaceDay.Api.Tests.csproj
-│
-├── RaceDay.sln
-└── README.md
-```
-
-
-## Part 1 Continuation
-Part 2 was developed as a continuation of the RaceDay system created in Part 1.
-
-The following Part 1 documentation and database resources are retained in the `docs` folder:
-
-* RaceDay Entity Relationship Diagram
-* RaceDay SQL database script
-* API endpoint planning documentation
-* Continuous Integration documentation/evidence
-
-The Part 2 implementation follows the entities and relationships established in the Part 1 database design.
-
-## Database
-The RaceDay system uses **Microsoft SQL Server** as its main database management system.
-
-The database contains the following main entities:
-
-1. Users
-2. Routes
-3. Events
-4. Categories
-5. Enrolments
-6. Results
-7. EventWeather
-
-The database creation script is provided in:
-
-```text
-docs/RaceDayDatabase.sql
-```
-
-The Entity Framework Core database context is located at:
-
-```text
-src/RaceDay.Api/Data/RaceDayDbContext.cs
-```
-
-The database connection is configured through the application's connection string.
-
-### SQL Server Setup
-Before running the API against SQL Server:
-
-1. Open SQL Server Management Studio.
-2. Connect to the required SQL Server instance.
-3. Open `docs/RaceDayDatabase.sql`.
-4. Execute the script to create the RaceDay database and tables.
-5. Check the connection string in the application's configuration.
-6. Ensure that the SQL Server instance is running.
-7. Build and run the API.
-
-## API Functionality
-The Part 2 API provides endpoints for the main RaceDay system functionality.
-
-### Authentication
-
-```text
-POST /api/auth/register
-POST /api/auth/login
-POST /api/auth/logout
-```
-
-These endpoints allow users to register, log in and log out.
-
-Passwords are handled using password hashing rather than storing plain-text passwords.
-
-
-### User Profile
-
-```text
-GET /api/users/profile
-PUT /api/users/profile
-```
-
-Authenticated users can retrieve and update their profile information.
-
-### Events
-
-```text
-GET    /api/events
-GET    /api/events/{id}
-POST   /api/events
-PUT    /api/events/{id}
-DELETE /api/events/{id}
-```
-
-Events can be viewed and managed according to the user's role.
-
-Organisers are responsible for creating and managing events.
-
-### Categories
-The API provides functionality for managing categories associated with events.
-
-```text
-GET    /api/events/{eventId}/categories
-POST   /api/events/{eventId}/categories
-PUT    /api/events/{eventId}/categories/{categoryId}
-DELETE /api/events/{eventId}/categories/{categoryId}
-```
-
-
-### Enrolments
-Participants can enrol in events and view their enrolment information.
-
-Organisers can manage enrolments associated with their events.
-
-The enrolment functionality supports statuses such as:
-* Pending
-* Confirmed
-* Cancelled
-
-### Results
-The API provides functionality for creating, updating and viewing race results.
-Results are associated with participant enrolments.
-
-### Weather
-The API provides functionality for viewing and adding weather information associated with an event.
-
-Weather information includes:
-
-* Weather date
-* Temperature
-* Weather condition
-* Humidity
-
-## Role-Based Access
-RaceDay uses two main roles:
+## Roles and features
 
 ### Organiser
-Organisers can perform administrative event-management operations such as:
-
-* Creating events
-* Updating events
-* Deleting events
-* Managing event categories
-* Managing participant enrolments
-* Managing race information
+- Role-aware dashboard and navigation.
+- Create, edit and delete events.
+- Upload event banner images.
+- Add and view event categories.
+- View event enrolments and update their statuses.
+- Capture race finish times, finishing positions and result statuses.
 
 ### Participant
-Participants can:
+- Browse and view events and available categories.
+- Enrol in an event and cancel an enrolment.
+- View personal event entries and race history.
+- View and update profile information and upload a profile picture.
 
-* Register
-* Log in
-* View and update their profile
-* View events
-* Enrol in events
-* View their own enrolments
-* View relevant race information
+## Requirements
 
-Access restrictions are implemented in the API to prevent users from performing operations outside their assigned role.
+- .NET 8 SDK
+- Visual Studio 2022 or later
+- SQL Server / SQL Server Express and SSMS
+- Azure Storage account with Blob service enabled (for real cloud image uploads)
+- Docker Desktop (for container execution)
 
-## Running the Application
+## 1. Database setup
 
-### Requirements
+1. Back up the existing database.
+2. Run `docs/RaceDayDatabase.sql` only if creating a fresh database.
+3. For an existing Part 2 database, run `docs/Part3-Database-Update.sql` once to add `Users.ProfilePictureUrl`.
+4. Confirm the API connection string in `src/RaceDay.Api/appsettings.json` or use an environment variable. Do not commit production credentials.
 
-The following software is required:
+## 2. Configure and run the API
 
-* .NET 8 SDK
-* Visual Studio 2022 or later
-* SQL Server
-* SQL Server Management Studio
-* Git
+Set the SQL Server connection string using a local user-secrets store or environment variable. Example PowerShell environment variable:
 
-### Step 1 – Open the Project
-
-Open:
-
-```text
-RaceDay.sln
+```powershell
+$env:ConnectionStrings__RaceDayConnection="Server=localhost\SQLEXPRESS01;Database=RaceDayDB;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true"
 ```
 
-in Visual Studio.
-
-### Step 2 – Restore NuGet Packages
-Visual Studio should restore the required NuGet packages automatically.
-
-If required, use:
-
-```text
-Build → Rebuild Solution
-```
-
-### Step 3 – Configure the Database
-Ensure that the SQL Server database has been created using:
-
-```text
-docs/RaceDayDatabase.sql
-```
-
-Check the application's database connection configuration before running the API.
-
-### Step 4 – Run the API
-Run the project from Visual Studio.
-
-The application should start and open the Swagger interface.
-
-Swagger provides an interactive interface for viewing and testing the available API endpoints.
-
-## Swagger / OpenAPI
-Swagger is configured for the RaceDay API.
-
-When the application is running in the Development environment, the Swagger interface can be used to:
-
-* View available endpoints
-* View HTTP methods
-* View request parameters
-* View request and response structures
-* Send requests to the API
-* Examine API responses
-
-Swagger is available through the application's local Swagger URL displayed when the API starts.
-
-## Automated Testing
-The RaceDay API includes an automated test project located in `tests/RaceDay.Api.Tests/`.
-
-The project uses:
-
-* xUnit for automated testing.
-* ASP.NET Core `WebApplicationFactory` for API integration testing.
-* Entity Framework Core In-Memory Database for isolated test data.
-
-The automated tests were executed in Visual Studio using Test Explorer. **All tests passed successfully.**
-
-To run the tests again, open the solution in Visual Studio and select:
-
-`Test → Test Explorer → Run All`
-
-Alternatively, run the following command from the solution directory:
+Run the API from the repository root:
 
 ```bash
-dotnet test
+dotnet restore RaceDay.sln
+dotnet run --project src/RaceDay.Api/RaceDay.Api.csproj --urls http://localhost:5080
 ```
 
-The test database is separate from the main SQL Server database and does not require a separate SQL Server database named `RaceDayTests`.
+Swagger is available in Development at `http://localhost:5080/swagger`.
 
+## 3. Configure Azure Blob Storage
 
-### Running Tests
-In Visual Studio:
+Create an Azure Storage account and obtain its connection string from the Azure Portal. Configure it as a secret; do not commit it to Git.
 
-```text
-Test
-→ Test Explorer
-→ Run All
+PowerShell:
+
+```powershell
+$env:AzureBlobStorage__ConnectionString="<your Azure Storage connection string>"
 ```
 
-The tests can also be executed using the .NET CLI:
+Linux/macOS:
 
 ```bash
-dotnet test
+export AzureBlobStorage__ConnectionString="<your Azure Storage connection string>"
 ```
 
-## Continuous Integration
-A GitHub Actions workflow is included in:
+The API creates these containers when needed:
 
-```text
-.github/workflows/part2-ci.yml
+- `event-banners`
+- `profile-pictures`
+
+Accepted image formats: JPEG, PNG and WebP. Maximum upload size: 5 MB. The API uploads the image and returns its URL; the MVC application never talks to Azure directly.
+
+## 4. Run the MVC application locally
+
+Start the API first on `http://localhost:5080`. In another terminal:
+
+```bash
+dotnet run --project src/RaceDay.Mvc/RaceDay.Mvc.csproj
 ```
 
-The workflow is intended to build and test the project automatically when changes are pushed to GitHub.
+Open `http://localhost:5081` (or the URL shown in the terminal). If the API uses another address, set `ApiSettings:BaseUrl` in `src/RaceDay.Mvc/appsettings.json` or the `ApiSettings__BaseUrl` environment variable.
 
-This provides automated verification of the project during development.
+**Session flow:** MVC stores the user's ID and role in its own session. The API's `.RaceDay.Session` cookie is also retained in the MVC session and forwarded with subsequent `HttpClient` requests. The API remains responsible for authorising each protected operation.
 
-## API Documentation
-The API endpoint planning from Part 1 is retained in:
+## 5. Docker
 
-```text
-docs/API_EndPoint_Plan.md
+Build the MVC container:
+
+```bash
+docker build -t raceday-mvc:part3 .
 ```
 
-The document provides the planned API routes and functionality used as the basis for the Part 2 implementation.
+Run it:
 
-
-## Entity Relationship Diagram
-The RaceDay database design is documented using the Entity Relationship Diagram retained from Part 1:
-
-```text
-docs/RaceDay-ERD.png
+```bash
+docker run --rm -p 8080:8080 -e ApiSettings__BaseUrl="http://host.docker.internal:5080/" raceday-mvc:part3
 ```
 
-The ERD shows the relationships between the RaceDay database entities.
+Or use Compose:
 
-## Security
-The application includes basic security measures appropriate for the API implementation, including:
+```bash
+docker compose up --build
+```
 
-* Password hashing
-* Authentication checks
-* Role-based access restrictions
-* Session-based authentication
-* Protected user profile operations
-* Validation of API requests
+Then open `http://localhost:8080`. The API must be running and reachable at the configured `ApiSettings__BaseUrl`. On Docker Desktop, `host.docker.internal` points from the container to the host machine. For a fully containerised deployment, configure the API as a separate service and use its Compose service name as the base URL. The current Dockerfile intentionally builds the MVC web application, as required by Part 3.
 
-Passwords are not intended to be stored as plain text.
+## 6. Tests and CI/CD
 
-## Development and Version Control
-The project is maintained using Git and GitHub.
+Run the existing Part 2 API tests:
 
-Development commits should document meaningful changes to the project, such as:
+```bash
+dotnet test tests/RaceDay.Api.Tests/RaceDay.Api.Tests.csproj
+```
 
-* API implementation
-* Database integration
-* Controller development
-* Authentication
-* Authorisation
-* Testing
-* Bug fixes
-* Documentation
-* Continuous Integration
+The `.github/workflows/part3-ci.yml` workflow restores and builds the solution, runs the API tests and builds the MVC Docker image on pushes and pull requests to `main`. Check the Actions tab and include a genuine screenshot of a successful green run in your final evidence.
 
-## Project Status
-### Part 1
+## 7. Important verification before submission
 
-The following Part 1 resources have been retained:
+- Test registration and login for both roles.
+- Confirm an unauthenticated user is redirected from protected MVC pages.
+- Confirm an Organiser can manage only their own events and a Participant cannot access Organiser actions.
+- Create an event with a valid existing `RouteID`.
+- Upload an event banner and verify that the URL is stored and the image displays.
+- Enrol a Participant, update the enrolment status, and capture a result.
+- Update a Participant profile and upload a profile image.
+- Build and run the MVC container while the API is reachable.
+- Verify the GitHub Actions workflow is green.
 
-* Database design
-* SQL database script
-* ERD
-* API endpoint plan
-* Project documentation
+## 8. Part 3 video and evidence
 
-### Part 2
-The Part 2 project contains:
+Add your own unlisted YouTube demonstration link here after recording your voiceover:
 
-* ASP.NET Core Web API
-* Entity Framework Core database context
-* SQL Server configuration
-* API controllers
-* Data models
-* DTOs
-* Authentication functionality
-* Role-based access controls
-* Automated API tests
-* Swagger/OpenAPI documentation
-* GitHub Actions workflow
+`PART3_YOUTUBE_VIDEO_LINK_TO_BE_ADDED`
 
-The API should be built and tested in Visual Studio before final submission.
+Add a genuine screenshot of the green GitHub Actions run under `docs/CI-Part3-Success.png` and link it here once available. Do not use a fabricated screenshot or claim a build passed before it has run.
 
-## Author
-**RaceDay – Comrades Marathon Event Management System**
-**Unanne Rofulufhela Munaka**
-Programming POE – Part 2
+## 9. GitHub submission checklist
+
+- Push the source code and Docker files to the prescribed Part 3 branch/folder in the lecturer-provided repository.
+- Make at least 20 meaningful commits for Part 3. Commits must represent actual development work; do not manufacture commits just to meet the number.
+- Include the README, Docker run command, real green CI screenshot and unlisted YouTube link.
+- Submit the GitHub repository link through ARC. The question paper states that ZIP files are not accepted as the submission.
+
+## AI-use disclosure
+
+If AI tools were used for planning, code assistance or proofreading, disclose that use in the manner required by the module instructions. Review, understand, test and adapt every generated change before submitting it as your own work.

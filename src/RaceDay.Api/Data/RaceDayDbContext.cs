@@ -28,6 +28,7 @@ public class RaceDayDbContext : DbContext
             entity.HasIndex(x => x.Email).IsUnique();
             entity.Property(x => x.PasswordHash).HasMaxLength(255).IsRequired();
             entity.Property(x => x.PhoneNumber).HasMaxLength(20);
+            entity.Property(x => x.ProfilePictureUrl).HasMaxLength(500);
             entity.Property(x => x.Role).HasMaxLength(20).IsRequired();
             entity.Property(x => x.DateCreated).HasDefaultValueSql("GETDATE()");
             entity.HasCheckConstraint("CK_Users_Role", "[Role] IN ('Organiser','Participant')");

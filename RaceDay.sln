@@ -6,12 +6,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaceDay.Api", "src\RaceDay.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaceDay.Api.Tests", "tests\RaceDay.Api.Tests\RaceDay.Api.Tests.csproj", "{C1A2B3C4-D5E6-47F8-9012-3456789ABCDE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaceDay.Mvc", "src\RaceDay.Mvc\RaceDay.Mvc.csproj", "{A894C7AF-E282-4416-8583-921E04D1B90A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A894C7AF-E282-4416-8583-921E04D1B90A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A894C7AF-E282-4416-8583-921E04D1B90A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A894C7AF-E282-4416-8583-921E04D1B90A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A894C7AF-E282-4416-8583-921E04D1B90A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B0E9F0A1-7A9D-4D3D-8B3E-4F1D2A9E2C10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B0E9F0A1-7A9D-4D3D-8B3E-4F1D2A9E2C10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0E9F0A1-7A9D-4D3D-8B3E-4F1D2A9E2C10}.Release|Any CPU.ActiveCfg = Release|Any CPU

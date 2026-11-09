@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using RaceDay.Api.Data;
 
 namespace RaceDay.Api.Tests;
-
 public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {
     private readonly string _databaseName = $"RaceDayTests-{Guid.NewGuid()}";
